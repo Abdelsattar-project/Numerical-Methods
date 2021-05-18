@@ -40,6 +40,9 @@
                     while (s.includes(i))
                         s = s.replace(i, j);
 
+                while (s.includes("x"))
+                    s = s.replace("x", x);
+
                 while (s.includes("sin"))
                     s = s.replace("sin", "s");
                 while (s.includes("cos"))
@@ -47,14 +50,13 @@
                 while (s.includes("tan"))
                     s = s.replace("tan", "t");
                 while (s.includes("sec"))
-                    s = s.replace("sec", "S");
+                    s = s.replace("sec", "e");
 
                 return s;
             }
 
-            function calc(s){
-                s = fixString(s);
-
+            function calc(s, x){
+                s = fixString(s, x);
                 // 1st priority ()
                 while (s.includes('(')){
                     let start;
@@ -81,10 +83,10 @@
                 }
 
                 // 2nd priority sin cos tan
-                while (s.includes('s') || s.includes('c') || s.includes('t') || s.includes('S')){
+                while (s.includes('s') || s.includes('c') || s.includes('t') || s.includes('e')){
                     let start;
                     for(let i = 0; i < s.length; i++){
-                        if(s[i] == 's' || s[i] == 'c' || s[i] == 't'){
+                        if(s[i] == 's' || s[i] == 'c' || s[i] == 't' || s[i] == 'e'){
                             start = i;
                             break;
                         }
@@ -99,8 +101,8 @@
                     else if(s[start] == 't')
                         res = Math.tan(after);
                     // sec
-                    else if(s[start] == 'S')
-                        res = 1/Math.tan(after);
+                    else if(s[start] == 'e')
+                        res = 1 / Math.tan(after);
                      s = s.replace(s.slice(start, afterIDX+1), res);
                 }
 
