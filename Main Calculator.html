@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8"/>
-        <title>Math IV solver</title>
-        <style>
-            #Bisection {
-                text-align: center;
-            }
-        </style>
         <script>
 
             function isOperand(c){
@@ -32,13 +22,19 @@
                 return i-1;
             }
 
-            function fixString(s){
+            function fixString(s, x, y){
                 while (s.includes(" "))
                     s = s.replace(" ", "");
 
                 for(let i = 'A', j = 'a'; i <= 'Z'; i++, j++)
                     while (s.includes(i))
                         s = s.replace(i, j);
+
+                while (s.includes("x"))
+                    s = s.replace("x", x);
+
+                while (s.includes("y"))
+                    s = s.replace("y", y);
 
                 while (s.includes("x"))
                     s = s.replace("x", x);
@@ -55,8 +51,8 @@
                 return s;
             }
 
-            function calc(s, x){
-                s = fixString(s, x);
+            function calc(s, x, y){
+                s = fixString(s, x, y);
                 // 1st priority ()
                 while (s.includes('(')){
                     let start;
@@ -71,7 +67,7 @@
                     }
                     let replaced = s.slice(start, end+1);
                     let New = s.slice(start+1, end);
-                    s = s.replace(replaced, calc(New));
+                    s = s.replace(replaced, calc(New, x, y));
                 }
 
                 while (s.includes('^')){
@@ -147,15 +143,3 @@
             }
 
         </script> 
-        
-    </head>
-    
-    <body>
-        <div id="Bisection">
-            <h2>Bisection</h2>
-            <label>Enter equation:</label><br>
-            <input type="text" id="equation"> = 0<br>
-            <input type="button" onclick="document.getElementById('equation').value = calc(document.getElementById('equation').value);"><br>
-        </div>
-    </body>
-</html>
