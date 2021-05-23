@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Math IV solver</title>
+        <style>
+            #fields {
+                text-align: center;
+            }
+        </style>
+        <script>
+
+            function Bisection(fx, a, b, iterations) {
+                document.getElementById('res1').value += a + ", ";
+                document.getElementById('res2').value += b + ", ";
+                document.getElementById('res3').value += (+a+ +b)/2 + ", ";
+                document.getElementById('res4').value +=  calc(fx, (+a + +b)/2) + ", ";
+
+                let c;
+                while(iterations--) {
+                    alert(iterations);
+                    c = (+a + +b)/ 2;
+                    let fc = calc(fx, c);
+                    if(fc > 0) {
+                        b = c;
+                    }
+                    else {
+                        a = c;
+                    }
+                    document.getElementById('res1').value += a + ", ";
+                    document.getElementById('res2').value += b + ", ";
+                    document.getElementById('res3').value += (+a+ +b)/2 + ", ";
+                    document.getElementById('res4').value +=  calc(fx, (+a + +b)/2) + ", ";
+                }
+
+            }
+
+        </script>
+    </head>
+    <div id = "fields">
+        <h2>Bisection</h2>
+        <label>Enter f(x) = 0:</label><br>
+        <input type="text" id="f(x)"><br>
+        <label>Enter a where  f(a) < 0:</label><br>
+        <input type="text" id="a"><br>
+        <label>Enter b where  f(b) > 0:</label><br>
+        <input type="text" id="b"><br>
+        <label>Enter iterations</label><br>
+        <input type="text" id="iterations"><br>
+        <input value="Solve" type="button" onclick="Bisection(document.getElementById('f(x)').value, document.getElementById('a').value, document.getElementById('b').value, document.getElementById('iterations').value);"><br>
+        a<input readonly  id = "res1" size="1000"></input><br><br>
+        b<input readonly id = "res2" size="1000"></input><br><br>
+        c<input readonly id = "res3" size="1000"></input><br><br>
+        F<sub>c</sub><input readonly id = "res4" size="1000"></input><br><br>
+    </div>
+
+</html>
