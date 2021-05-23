@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,18 +10,17 @@
             }
         </style>
         <script>
+            
             function newton(fx, ffx, x0, iterations){
-                document.getElementById('res1').innerHTML = "X<sub>n</sub>";
-                document.getElementById('res2').innerHTML = "F<sub>X<sub>n</sub></sub>";
-                document.getElementById('res3').innerHTML = "F'<sub>X<sub>n</sub></sub>";
+                alert(fx);
                 let xn = x0;
                 let fxn = calc(fx, xn);
                 let ffxn = calc(ffx, xn);
                 let xnPlus1 = xn - fxn / ffxn;
 
-                document.getElementById('res1').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + xn;
-                document.getElementById('res2').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + fxn;
-                document.getElementById('res3').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + ffxn;
+                document.getElementById('res1').value +=  xn + ", ";
+                document.getElementById('res2').value +=  fxn + ", ";
+                document.getElementById('res3').value +=  ffxn + ", ";
 
 
                 for(let i = 0; i < iterations; i++){
@@ -28,16 +28,16 @@
                     fxn = calc(fx, xn);
                     ffxn = calc(ffx, xn);
                     xnPlus1 = xn - fxn / ffxn;
-                    document.getElementById('res1').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + xn;
-                    document.getElementById('res2').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + fxn;
-                    document.getElementById('res3').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + ffxn;
+                    document.getElementById('res1').value +=  xn + ", ";
+                    document.getElementById('res2').value +=  fxn + ", ";
+                    document.getElementById('res3').value +=  ffxn + ", ";
                 }
 
             }
-        </script> 
-        
+        </script>
+
     </head>
-    
+
     <body>
         <div id="Newton">
             <h2>Newton</h2>
@@ -49,11 +49,11 @@
             <input type="text" id="iterations"> = 0<br>
             <label>Enter x0:</label><br>
             <input type="text" id="x0"> = 0<br>
-            <input type="button" onclick="newton(document.getElementById('equation').value, document.getElementById('equation2').value, document.getElementById('x0').value, document.getElementById('iterations').value);"><br>
+            <input value="Calculate" type="button" onclick="newton(document.getElementById('equation').value, document.getElementById('equation2').value, document.getElementById('x0').value, document.getElementById('iterations').value);"><br>
             <label>output:</label><br>
-            <label id = "res1">X<sub>n</sub></label><br>
-            <label id = "res2">F<sub>X<sub>n</sub></sub></label><br>
-            <label id = "res3">F'<sub>X<sub>n</sub></sub></label><br>
+            X<sub>n</sub><input readonly  id = "res1" size="1000"></input><br><br>
+            F<sub>X<sub>n</sub></sub><input readonly id = "res2" size="1000"></input><br><br>
+            F'<sub>X<sub>n</sub></sub><input readonly id = "res3" size="1000"></input><br><br>
         </div>
     </body>
 </html>
