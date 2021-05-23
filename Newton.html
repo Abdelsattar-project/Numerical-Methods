@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Math IV solver</title>
+        <style>
+            #Bisection {
+                text-align: center;
+            }
+        </style>
+        <script>
+            function newton(fx, ffx, x0, iterations){
+                document.getElementById('res1').innerHTML = "X<sub>n</sub>";
+                document.getElementById('res2').innerHTML = "F<sub>X<sub>n</sub></sub>";
+                document.getElementById('res3').innerHTML = "F'<sub>X<sub>n</sub></sub>";
+                let xn = x0;
+                let fxn = calc(fx, xn);
+                let ffxn = calc(ffx, xn);
+                let xnPlus1 = xn - fxn / ffxn;
+
+                document.getElementById('res1').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + xn;
+                document.getElementById('res2').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + fxn;
+                document.getElementById('res3').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + ffxn;
+
+
+                for(let i = 0; i < iterations; i++){
+                    xn = xnPlus1;
+                    fxn = calc(fx, xn);
+                    ffxn = calc(ffx, xn);
+                    xnPlus1 = xn - fxn / ffxn;
+                    document.getElementById('res1').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + xn;
+                    document.getElementById('res2').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + fxn;
+                    document.getElementById('res3').innerHTML +=  "&nbsp&nbsp&nbsp&nbsp" + ffxn;
+                }
+
+            }
+        </script> 
+        
+    </head>
+    
+    <body>
+        <div id="Bisection">
+            <h2>Bisection</h2>
+            <label>Enter equation:</label><br>
+            <input type="text" id="equation"> = 0<br>
+            <label>Enter deffrential equation:</label><br>
+            <input type="text" id="equation2"> = 0<br>
+            <label>Enter iterations:</label><br>
+            <input type="text" id="iterations"> = 0<br>
+            <label>Enter x0:</label><br>
+            <input type="text" id="x0"> = 0<br>
+            <input type="button" onclick="newton(document.getElementById('equation').value, document.getElementById('equation2').value, document.getElementById('x0').value, document.getElementById('iterations').value);"><br>
+            <label>output:</label><br>
+            <label id = "res1">X<sub>n</sub></label><br>
+            <label id = "res2">F<sub>X<sub>n</sub></sub></label><br>
+            <label id = "res3">F'<sub>X<sub>n</sub></sub></label><br>
+        </div>
+    </body>
+</html>
