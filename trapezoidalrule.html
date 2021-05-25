@@ -1,12 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8" />
-    <title>Trapezoidal Rule</title>
-    <link rel="shortcut icon" href="#" />
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Trapezoidal Rule</title>
+        <link rel="shortcut icon" href="#" />
+        <style>
+            #TrapezoidalValues{
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
     <form id="TrapezoidalValues">
+        <h2>Trapezoidal</h2>
         <div class="formBox">
             <label for="title">Enter the function</label>
             <input type="text" id="Fn" placeholder="F(x)" pattern="[0-9xX\*\+\(\)\/\.\^\-]." title="please enter a proper equation"  required />
@@ -55,20 +61,20 @@
             let IN= document.getElementById('Interval').value
             let h = (Up - Low) / IN;
             h = h.toFixed(4)
-            let Sum = eval(Fx, x=Up) + eval(Fx, x=Low);
+            let Sum = calc(Fx, x=Up) + calc(Fx, x=Low);
             document.write(Sum)
-            let j = 1*(Low + h); 
-           // document.write(j) 
+            let j = 1*(Low + h);
+            // document.write(j)
             for (let i = 1; i <= IN; i++) {
                 j += 1 * h * i;
-                Sum += (h / 2 * 2 * eval(Fx, x = j)); 
+                Sum += (h / 2 * 2 * calc(Fx, x = j));
             }
-                
-           Sum = Sum.toFixed(4);
-           document.write('The area is approximately ', Sum);
-            
+
+            Sum = Sum.toFixed(4);
+            document.write('The area is approximately ', Sum);
+
         }
 
     </script>
-</body>
+    </body>
 </html>
