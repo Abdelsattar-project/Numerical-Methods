@@ -1,74 +1,80 @@
+<!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8"/>
-        <title>Math IV solver</title>
+        <meta charset="UTF-8" />
+        <title>Trapezoidal Rule</title>
+        <link rel="shortcut icon" href="#" />
         <style>
-            #fields {
+            #TrapezoidalValues{
                 text-align: center;
             }
         </style>
-        <script>
-            let answered = false;
-            function destroySize(){
-                document.getElementById('fields').innerHTML = "    <h2>Lagrange</h2>\n" +
-                    "    <label>Enter length of array:</label><br>\n" +
-                    "    <input type=\"text\" id=\"n\"><br>\n" +
-                    "    <label>Enter interpolation point:</label><br>\n" +
-                    "    <input type=\"text\" id=\"interpPoint\"><br>\n" +
-                    "    <input value=\"Apply length\" type=\"button\" onclick=\"createFields(document.getElementById('n').value);\"><br>";
-            }
-            function createFields(n){
-                let N = document.getElementById('n').value;
-                let interpPoint = document.getElementById('interpPoint').value;
-                destroySize();
-                for(let i = 0; i < n; i++){
-                    document.getElementById('fields').innerHTML += "X" + i + "<input type='text' id='x'>&nbsp&nbspY" + i + "<input type='text' id='y'><br>";
-                    document.getElementById('x').id = 'x' + i;
-                    document.getElementById('y').id = 'y' + i;
-                }
-
-                let s = "<input id = 'TEST' value='Calculate' type='button' onClick=\"lagrange(document.getElementById('n').value, document.getElementById('interpPoint').value);\">";
-                document.getElementById('fields').innerHTML += s + "<br>";
-                document.getElementById('n').value = N;
-                document.getElementById('interpPoint').value = interpPoint;
-            }
-
-            function lagrange(n, interpPoint) {
-                let lag = [], f = [], res = 0, mul;
-                for(let i = 0; i < n; i++) {
-                    let ID = 'x' + i;
-                    lag[i] = document.getElementById(ID).value;
-                }
-                for(let i = 0; i < n; i++) {
-                    let ID = 'y' + i;
-                    f[i] = document.getElementById(ID).value;
-                }
-
-                for(let i = 0; i < n; i++){
-                    mul = 1;
-                    for(let j = 0; j < n; j++){
-                        if(i != j){
-                            mul *= (interpPoint - lag[j]) / (lag[i] - lag[j]);
-                        }
-                    }
-                    res += mul * f[i];
-                }
-                if(answered == false) {
-                    document.getElementById('fields').innerHTML += '<input readOnly type="text" id = "res"><br>';
-                    answered = true;
-                }
-                document.getElementById('res').value = res;
-            }
-
-        </script>
     </head>
-    <div id = "fields">
-    <h2>Lagrange</h2>
-    <label>Enter length of array:</label><br>
-    <input type="text" id="n"><br>
-    <label>Enter interpolation point:</label><br>
-    <input type="text" id="interpPoint"><br>
-    <input value="Apply length" type="button" onclick="createFields(document.getElementById('n').value);"><br>
-    </div>
+    <body>
+    <form id="TrapezoidalValues">
+        <h2>Trapezoidal</h2>
+        <div class="formBox">
+            <label for="title">Enter the function</label>
+            <input type="text" id="Fn" placeholder="F(x)" pattern="[0-9xX\*\+\(\)\/\.\^\-]." title="please enter a proper equation"  required />
+        </div> <!-- makes an input text field. the user will enter Fn = function to solve here-->
+        <br />   <!-- adds a line break. بيسيب سطر-->
 
+        <div class="formBox">
+            <label for="title">Enter the Upper Bound</label>
+            <input type="number" id="UpBound" placeholder="0" required />
+        </div>  <!--input text field, the user will enter the UpBound = upper bound for the interval-->
+        <br />
+
+        <div class="formBox">
+            <label for="title">Enter the Lower Bound</label>
+            <input type="number" id="LowBound" placeholder="0" required />
+        </div>  <!--input text field asking for LowBound = lower bound of the interval-->
+        <br />
+
+        <div class="formBox">
+            <label for="title">Enter the no. if intervals</label>
+            <input type="number" min="1" id="Interval" placeholder="0" required />
+        </div> <!--input text field for n= number of intervals-->
+        <br />
+
+        <div class="formBox">
+            <button type="submit" onclick="Trapezoidal();">Evaluate</button>
+        </div>   <!-- creates a button, when the user presses it, it solves the equation-->
+
+    </form>
+    <script>
+        const TrapezoidalValues = document.getElementById('TrapezoidalValues')
+        TrapezoidalValues.addEventListener('submit', (ev) => {
+
+            //stops form from submitting & refreshing the page upon clicking the button Evaluate & displays error message first if there is an error
+            if (document.getElementById('UpBound').value <= document.getElementById('LowBound').value) {
+                // messages.push('Upper bound cannot be smaller than lower bound')
+                alert("Upper bound cannot be smaller than lower bound")
+            }
+        })
+
+        function Trapezoidal() {
+
+            let Fx = document.getElementById('Fn').value
+            let Up = document.getElementById('UpBound').value
+            let Low = document.getElementById('LowBound').value
+            let IN= document.getElementById('Interval').value
+            let h = (Up - Low) / IN;
+            h = h.toFixed(4)
+            let Sum = calc(Fx, x=Up) + calc(Fx, x=Low);
+            document.write(Sum)
+            let j = 1*(Low + h);
+            // document.write(j)
+            for (let i = 1; i <= IN; i++) {
+                j += 1 * h * i;
+                Sum += (h / 2 * 2 * calc(Fx, x = j));
+            }
+
+            Sum = Sum.toFixed(4);
+            document.write('The area is approximately ', Sum);
+
+        }
+
+    </script>
+    </body>
 </html>
