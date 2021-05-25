@@ -10,10 +10,10 @@
     <script>
 
         function Bisection(fx, a, b, iterations) {
-            document.getElementById('res1').value = a + ", ";
-            document.getElementById('res2').value = b + ", ";
-            document.getElementById('res3').value = (+a + +b) / 2 + ", ";
-            document.getElementById('res4').value = calc(fx, (+a + +b) / 2) + ", ";
+            document.getElementById('res1').value = a.toFixed(4) + ", ";
+            document.getElementById('res2').value = b.toFixed(4) + ", ";
+            document.getElementById('res3').value = ((+a + +b) / 2).toFixed(4) + ", ";
+            document.getElementById('res4').value = (calc(fx, (+a + +b) / 2)).toFixed(4) + ", ";
 
             let c;
             while (iterations--) {
@@ -24,10 +24,10 @@
                 } else {
                     a = c;
                 }
-                document.getElementById('res1').value += a + ", ";
-                document.getElementById('res2').value += b + ", ";
-                document.getElementById('res3').value += (+a + +b) / 2 + ", ";
-                document.getElementById('res4').value += calc(fx, (+a + +b) / 2) + ", ";
+            document.getElementById('res1').value += a.toFixed(4) + ", ";
+            document.getElementById('res2').value += b.toFixed(4) + ", ";
+            document.getElementById('res3').value += ((+a + +b) / 2).toFixed(4) + ", ";
+            document.getElementById('res4').value += (calc(fx, (+a + +b) / 2)).toFixed(4) + ", ";
             }
 
         }
