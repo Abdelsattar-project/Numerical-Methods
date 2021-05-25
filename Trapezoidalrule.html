@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Trapezoidal Rule</title>
+    <link rel="shortcut icon" href="#" />
+    <style>
+        #TrapezoidalValues{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="TrapezoidalValues">
+    <h2>Trapezoidal</h2>
+    <div class="formBox">
+        <label for="title">Enter the function</label>
+        <input type="text" id="Fn" placeholder="F(x)" title="please enter a proper equation"  required />
+    </div> <!-- makes an input text field. the user will enter Fn = function to solve here-->
+    <br />   <!-- adds a line break. بيسيب سطر-->
+
+    <div class="formBox">
+        <label for="title">Enter the Upper Bound</label>
+        <input  id="UpBound" placeholder="0" required />
+    </div>  <!--input text field, the user will enter the UpBound = upper bound for the interval-->
+    <br />
+
+    <div class="formBox">
+        <label for="title">Enter the Lower Bound</label>
+        <input type="number" id="LowBound" placeholder="0" required />
+    </div>  <!--input text field asking for LowBound = lower bound of the interval-->
+    <br />
+
+    <div class="formBox">
+        <label for="title">Enter the no. if intervals</label>
+        <input type="number" min="1" id="Interval" placeholder="0" required />
+    </div> <!--input text field for n= number of intervals-->
+    <br />
+
+    <div class="formBox">
+        <button type="submit" onclick="Trapezoidal();">Evaluate</button>
+    </div>   <!-- creates a button, when the user presses it, it solves the equation-->
+    <br>
+    <input readOnly type="text" id = "res"><br>
+
+</div>
+<script>
+        function isOperand(c){
+        return (c == '^' || c == '*' || c == '/' || c == '+' || c == '-');
+    }
+
+    function getBeforeIDX(s, st){
+        let i;
+        for(i = st-1; i >= 0 && !isOperand(s[i]); i--)
+            continue;
+        if(i === 0 && s[i] == '-')
+            return i;
+        return i+1;
+    }
+
+    function getAfterIDX(s, st){
+        let i;
+        for(i = st+1; i < s.length; i++) {
+            if(i > st+1 && isOperand(s[i]))
+                break;
+        }
+        return i-1;
+    }
+
+    function fixString(s, x){
+        while (s.includes(" "))
+            s = s.replace(" ", "");
+
+        for(let i = 'A', j = 'a'; i <= 'Z'; i++, j++)
+            while (s.includes(i))
+                s = s.replace(i, j);
+
+        while (s.includes("x"))
+            s = s.replace("x", x);
+
+        while (s.includes("sin"))
+            s = s.replace("sin", "s");
+        while (s.includes("cos"))
+            s = s.replace("cos", "c");
+        while (s.includes("tan"))
+            s = s.replace("tan", "t");
+        while (s.includes("sec"))
+            s = s.replace("sec", "a");
+        while (s.includes("log"))
+            s = s.replace("log", "l");
+        while (s.includes("ln")) // log e
+            s = s.replace("ln", "n");
+        while (s.includes("e")) // Euler Number
+            s = s.replace("e", Math.exp(1));
+
+        return s;
+    }
+
+    function calc(s, x){
+        s = fixString(s, x);
+        // 1st priority ()
+        while (s.includes('(')){
+            let start;
+            let end;
+            for(let i = 0; i < s.length; i++){
+                if(s[i] == '(')
+                    start = i;
+                else if(s[i] == ')') {
+                    end = i;
+                    break;
+                }
+            }
+            let replaced = s.slice(start, end+1);
+            let New = s.slice(start+1, end);
+            s = s.replace(replaced, calc(New, x));
+        }
+
+        while (s.includes('^')){
+            let start = s.indexOf('^');
+            let beforeIDX = getBeforeIDX(s,start);
+            let afterIDX = getAfterIDX(s,start);
+            let power = Math.pow(s.slice(beforeIDX, start), s.slice(start+1, afterIDX+1));
+            s = s.replace(s.slice(beforeIDX, afterIDX+1), power);
+        }
+
+        // 2nd priority sin cos tan
+        while (s.includes('s') || s.includes('c') || s.includes('t') || s.includes('a') || s.includes('l')|| s.includes('n')){
+            let start;
+            for(let i = 0; i < s.length; i++){
+                if(s[i] == 's' || s[i] == 'c' || s[i] == 't' || s[i] == 'a' || s[i] == 'l' || s[i] == 'n'){
+                    start = i;
+                    break;
+                }
+            }
+            let afterIDX = getAfterIDX(s,start);
+            let after = s.slice(start+1, afterIDX+1);
+            let res;
+            if(s[start] == 's')
+                res = Math.sin(after);
+            else if(s[start] == 'c')
+                res = Math.cos(after);
+            else if(s[start] == 't')
+                res = Math.tan(after);
+            else if(s[start] == 'a') // sec
+                res = 1 / Math.tan(after);
+            else if(s[start] == 'l') // log
+                res = Math.log(after);
+            else if(s[start] == 'n') // log2
+                res = getBaseLog(Math.exp(1), after);
+            s = s.replace(s.slice(start, afterIDX+1), res);
+        }
+
+        // 4th priority */
+        while (s.includes('*') || s.includes('/')){
+            let start;
+            for(let i = 0; i < s.length; i++){
+                if(s[i] == '*' || s[i] == '/'){
+                    start = i;
+                    break;
+                }
+            }
+            let beforeIDX = getBeforeIDX(s,start);
+            let afterIDX = getAfterIDX(s,start);
+            let res;
+            if(s[start] == '*')
+                res = s.slice(beforeIDX, start) * s.slice(start+1, afterIDX+1);
+            else if(s[start] == '/')
+                res = s.slice(beforeIDX, start) / s.slice(start+1, afterIDX+1);
+            s = s.replace(s.slice(beforeIDX, afterIDX+1), res);
+        }
+
+        // 5th priority +-
+        while (s.includes('+') || s.indexOf('-') > 0){
+            let start;
+            for(let i = 1; i < s.length; i++){
+                if(s[i] == '+' || s[i] == '-'){
+                    start = i;
+                    break;
+                }
+            }
+            let beforeIDX = getBeforeIDX(s,start);
+            let afterIDX = getAfterIDX(s,start);
+            let sum;
+            if(s[start] == '+')
+                sum = +s.slice(beforeIDX, start) + +s.slice(start+1, afterIDX+1);
+            else
+                sum = s.slice(beforeIDX, start) - s.slice(start+1, afterIDX+1);
+            s = s.replace(s.slice(beforeIDX, afterIDX+1), sum);
+        }
+        return s;
+    }
+
+
+    function Trapezoidal() {
+
+        let Fx = document.getElementById('Fn').value
+        let Up = document.getElementById('UpBound').value
+        let Low = document.getElementById('LowBound').value
+        let IN = document.getElementById('Interval').value
+
+        if (Up < Low) {
+            alert("Upper bound cannot be smaller than lower bound")
+            return -1;
+        }
+
+        else {
+            let h = (Up - Low) / IN;
+            let Sum = (h/2) * (+calc(Fx, x=Up) + +calc(Fx, x=Low));
+            for (let i = 1; i < IN; i++) {
+                Sum += (h * calc(Fx, x = i*h));
+            }
+            Sum = Sum.toFixed(4);
+            document.getElementById("res").value = Sum;
+            
+        }
+    }
+
+</script>
+</body>
+</html>
