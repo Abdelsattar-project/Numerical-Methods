@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Math IV solver</title>
+        <style>
+            #fields {
+                text-align: center;
+            }
+            body {
+            background-color: #212423;
+        }
+        label{
+            color: #ffff;
+            display: block;
+            font-size: 15px;
+            margin: 10px; 
+            
+        }
+
+        h2{
+            color: #ffff;
+            text-decoration: underline;
+            display: block;
+            font-size: 30px;
+            margin: 20px; 
+        }
+
+
+        #solve{
+            background-color: #3b423b;
+            color: rgb(255, 255, 255);
+            display: block;
+            font-size: 20px;
+            margin: 20px;
+            margin-left: 42%;
+            right: 50%;
+            width: 200px;
+            
+        }
+        #applyLength{
+            background-color: #3b423b;
+            color: rgb(255, 255, 255);
+            display: block;
+            font-size: 20px;
+            margin: 20px;
+            margin-left: 42%;
+            right: 50%;
+            width: 200px;
+            
+        }
+        #index{
+            color: #ffff;
+            display: inline;
+            font-size: 15px;
+            margin: 10px; 
+            margin-left: 0px;
+        }
+        </style>
+        <script>
+            let answered = false;
+            function destroySize(){
+                document.getElementById('fields').innerHTML = "    <h2>Lagrange</h2>\n" +
+                    "    <label>Enter length of array:</label><br>\n" +
+                    "    <input type=\"text\" id=\"n\"><br>\n" +
+                    "    <label>Enter interpolation point:</label><br>\n" +
+                    "    <input type=\"text\" id=\"interpPoint\"><br>\n" +
+                    "    <input id = \"applyLength\" value=\"Apply length\" type=\"button\" onclick=\"createFields(document.getElementById('n').value);\"><br>";
+            }
+            function createFields(n){
+                let N = document.getElementById('n').value;
+                let interpPoint = document.getElementById('interpPoint').value;
+                destroySize();
+                for(let i = 0; i < n; i++){
+                    document.getElementById('fields').innerHTML += "<label id = \"index\">X</label>" + "<label id = \"index\">" + i + "</label>" + "<input type='text' id='x'>&nbsp&nbsp<label id = \"index\">Y</label>" + "<label id = \"index\">" + i + "</label>"  + "<input type='text' id='y'><br>";
+                    document.getElementById('x').id = 'x' + i;
+                    document.getElementById('y').id = 'y' + i;
+                }
+
+                let s = "<input id = 'solve' value='Calculate' type='button' onClick=\"lagrange(document.getElementById('n').value, document.getElementById('interpPoint').value);\">";
+                document.getElementById('fields').innerHTML += s + "<br>";
+                document.getElementById('n').value = N;
+                document.getElementById('interpPoint').value = interpPoint;
+            }
+
+            function lagrange(n, interpPoint) {
+                let lag = [], f = [], res = 0, mul;
+                for(let i = 0; i < n; i++) {
+                    let ID = 'x' + i;
+                    lag[i] = document.getElementById(ID).value;
+                }
+                for(let i = 0; i < n; i++) {
+                    let ID = 'y' + i;
+                    f[i] = document.getElementById(ID).value;
+                }
+
+                for(let i = 0; i < n; i++){
+                    mul = 1;
+                    for(let j = 0; j < n; j++){
+                        if(i != j){
+                            mul *= (interpPoint - lag[j]) / (lag[i] - lag[j]);
+                        }
+                    }
+                    res += mul * f[i];
+                }
+                if(answered == false) {
+                    document.getElementById('fields').innerHTML += '<input readOnly type="text" id = "res"><br>';
+                    answered = true;
+                }
+                document.getElementById('res').value = res.toFixed(4);
+            }
+
+        </script>
+    </head>
+    <div id = "fields">
+    <h2>Lagrange</h2>
+    <label>Enter length of array:</label>
+    <input type="text" id="n"><br>
+    <label>Enter interpolation point:</label>
+    <input type="text" id="interpPoint"><br>
+    <input id = "applyLength" value="Apply length" type="button" onclick="createFields(document.getElementById('n').value);"><br>
+    </div>
+
+</html>
