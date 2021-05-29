@@ -45,6 +45,7 @@
 
         </style>
         <script>
+
     function isOperand(c){
         return (c == '^' || c == '*' || c == '/' || c == '+' || c == '-');
     }
@@ -60,9 +61,8 @@
 
     function getAfterIDX(s, st){
         let i;
-        for(i = st+1; i < s.length; i++) {
-            if(i > st+1 && isOperand(s[i]))
-                break;
+        for(i = st+1; i < s.length && !isOperand(s[i]); i++) {
+            continue;
         }
         return i-1;
     }
@@ -75,8 +75,7 @@
             while (s.includes(i))
                 s = s.replace(i, j);
 
-        while (s.includes("x"))
-            s = s.replace("x", x);
+
 
         while (s.includes("sin"))
             s = s.replace("sin", "s");
@@ -92,6 +91,8 @@
             s = s.replace("ln", "n");
         while (s.includes("e")) // Euler Number
             s = s.replace("e", Math.exp(1));
+        while (s.includes("x"))
+            s = s.replace("x", x);
 
         return s;
     }
@@ -152,13 +153,10 @@
 
         // 4th priority */
         while (s.includes('*') || s.includes('/')){
-            let start;
-            for(let i = 0; i < s.length; i++){
-                if(s[i] == '*' || s[i] == '/'){
-                    start = i;
-                    break;
-                }
-            }
+            let start = Math.min(s.indexOf('*') , s.indexOf('/'));
+            if(start == -1)
+                start = Math.max(s.indexOf('*'), s.indexOf('/'));
+
             let beforeIDX = getBeforeIDX(s,start);
             let afterIDX = getAfterIDX(s,start);
             let res;
@@ -171,13 +169,11 @@
 
         // 5th priority +-
         while (s.includes('+') || s.indexOf('-') > 0){
-            let start;
-            for(let i = 1; i < s.length; i++){
-                if(s[i] == '+' || s[i] == '-'){
-                    start = i;
-                    break;
-                }
-            }
+            let start = Math.min(s.indexOf('+') , s.indexOf('-'));
+            if(start == -1)
+                start = Math.max(s.indexOf('+'), s.indexOf('-'));
+
+
             let beforeIDX = getBeforeIDX(s,start);
             let afterIDX = getAfterIDX(s,start);
             let sum;
@@ -204,10 +200,9 @@
             "<th>" + ((+a + +b) / 2) + "</th>" +
             "<th>" + calc(fx, (+a + +b) / 2) + "</th>" + "</tr>";
 
-        let c;
         while (iterations--) {
-                c = (+a + +b) / 2;
-                let fc = calc(fx, c);
+                let c = (+a + +b) / 2;
+                let fc = calc(fx, c.toFixed(5));
                 if (fc > 0) {
                     b = c;
                 } else {
