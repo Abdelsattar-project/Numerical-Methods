@@ -42,39 +42,28 @@
 <body>
 <div id="TrapezoidalValues">
     <h2>Trapezoidal</h2>
-    <div class="formBox">
-        <label for="title">Enter the function</label>
+        <label for="title">Function</label>
         <input type="text" id="Fn" placeholder="F(x)" title="please enter a proper equation"  required />
-    </div> <!-- makes an input text field. the user will enter Fn = function to solve here-->
-    <br />   <!-- adds a line break. بيسيب سطر-->
-
-    <div class="formBox">
-        <label for="title">Enter the Upper Bound</label>
-        <input  id="UpBound" placeholder="0" required />
-    </div>  <!--input text field, the user will enter the UpBound = upper bound for the interval-->
-    <br />
-
-    <div class="formBox">
-        <label for="title">Enter the Lower Bound</label>
+        <!-- makes an input text field. the user will enter Fn = function to solve here-->
+        <label for="title">Upper Bound</label>
+        <input type="number" id="UpBound" placeholder="0" required />
+        <!--input text field, the user will enter the UpBound = upper bound for the interval-->
+    
+        <label for="title">Lower Bound</label>
         <input type="number" id="LowBound" placeholder="0" required />
-    </div>  <!--input text field asking for LowBound = lower bound of the interval-->
-    <br />
+        <!--input text field asking for LowBound = lower bound of the interval-->
 
-    <div class="formBox">
-        <label for="title">Enter the no. if intervals</label>
+        <label for="title">No. of intervals</label>
         <input type="number" min="1" id="Interval" placeholder="0" required />
-    </div> <!--input text field for n= number of intervals-->
-    <br />
+        <!--input text field for n= number of intervals-->
 
-    <div class="formBox">
         <button id = "solve" type="submit" onclick="Trapezoidal();">Solve</button>
-    </div>   <!-- creates a button, when the user presses it, it solves the equation-->
-    <br>
-    <input readOnly type="text" id = "res"><br>
+        <!-- creates a button, when the user presses it, it solves the equation-->
+        <input readOnly type="text" id = "res"><br>
 
 </div>
 <script>
-        function isOperand(c){
+    function isOperand(c){
         return (c == '^' || c == '*' || c == '/' || c == '+' || c == '-');
     }
 
@@ -100,12 +89,7 @@
         while (s.includes(" "))
             s = s.replace(" ", "");
 
-        for(let i = 'A', j = 'a'; i <= 'Z'; i++, j++)
-            while (s.includes(i))
-                s = s.replace(i, j);
-
-        while (s.includes("x"))
-            s = s.replace("x", x);
+        s = s.toLowerCase();
 
         while (s.includes("sin"))
             s = s.replace("sin", "s");
@@ -121,6 +105,8 @@
             s = s.replace("ln", "n");
         while (s.includes("e")) // Euler Number
             s = s.replace("e", Math.exp(1));
+        while (s.includes("x"))
+            s = s.replace("x", x);
 
         return s;
     }
@@ -173,21 +159,18 @@
             else if(s[start] == 'a') // sec
                 res = 1 / Math.tan(after);
             else if(s[start] == 'l') // log
-                res = Math.log(after);
-            else if(s[start] == 'n') // log2
-                res = getBaseLog(Math.exp(1), after);
+                res = Math.log(parseFloat(after));
+            else if(s[start] == 'n') // log e
+                res =  Math.log(parseFloat(after)) / Math.log(2.71828);
             s = s.replace(s.slice(start, afterIDX+1), res);
         }
 
         // 4th priority */
         while (s.includes('*') || s.includes('/')){
-            let start;
-            for(let i = 0; i < s.length; i++){
-                if(s[i] == '*' || s[i] == '/'){
-                    start = i;
-                    break;
-                }
-            }
+            let start = Math.min(s.indexOf('*') , s.indexOf('/'));
+            if(start == -1)
+                start = Math.max(s.indexOf('*'), s.indexOf('/'));
+
             let beforeIDX = getBeforeIDX(s,start);
             let afterIDX = getAfterIDX(s,start);
             let res;
@@ -200,13 +183,10 @@
 
         // 5th priority +-
         while (s.includes('+') || s.indexOf('-') > 0){
-            let start;
-            for(let i = 1; i < s.length; i++){
-                if(s[i] == '+' || s[i] == '-'){
-                    start = i;
-                    break;
-                }
-            }
+            let start = Math.min(s.indexOf('+') , s.indexOf('-'));
+            if(start == -1 || start === 0 && s[start] == '-')
+                start = Math.max(s.indexOf('+'), s.indexOf('-'));
+
             let beforeIDX = getBeforeIDX(s,start);
             let afterIDX = getAfterIDX(s,start);
             let sum;
@@ -226,18 +206,35 @@
         let Up = document.getElementById('UpBound').value
         let Low = document.getElementById('LowBound').value
         let IN = document.getElementById('Interval').value
-
+        if(Fx == ""){
+            alert("Missing Function");
+            return;
+        }
+        if(Up == ""){
+            alert("Missing Upper Bound");
+            return;
+        }
+        if(Low == ""){
+            alert("Missing Lower Bound");
+            return;
+        }
+        if(IN == ""){
+            alert("Number Of Intervals");
+            return;
+        }
         if (Up < Low) {
-            alert("Upper bound cannot be smaller than lower bound")
+            alert("Upper bound cannot be less than lower bound")
             return -1;
         }
 
         else {
-            let h = (Up - Low) / IN;
-            let Sum = (h/2) * (+calc(Fx, x=Up) + +calc(Fx, x=Low));
+            let h = (parseFloat(Up -Low)) / parseFloat(IN);
+            let Sum = +calc(Fx, parseFloat(Up).toFixed(5)) + +calc(Fx, parseFloat(Low).toFixed(5));
             for (let i = 1; i < IN; i++) {
-                Sum += (h * calc(Fx, x = i*h));
+                let dis = +Low + +(i*h);
+                Sum += 2*calc(Fx, parseFloat(dis).toFixed(5));
             }
+            Sum = Sum * h/2;
             Sum = Sum.toFixed(4);
             document.getElementById("res").value = Sum;
             
