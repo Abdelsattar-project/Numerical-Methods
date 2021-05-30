@@ -1,7 +1,7 @@
 <html>
     <head>
         <meta charSet="UTF-8"/>
-        <title>Math IV solver</title>
+        <title>Bisection</title>
         <style>
             
 
@@ -71,9 +71,7 @@
         while (s.includes(" "))
             s = s.replace(" ", "");
 
-        for(let i = 'A', j = 'a'; i <= 'Z'; i++, j++)
-            while (s.includes(i))
-                s = s.replace(i, j);
+        s = s.toLowerCase();
 
 
 
@@ -170,7 +168,7 @@
         // 5th priority +-
         while (s.includes('+') || s.indexOf('-') > 0){
             let start = Math.min(s.indexOf('+') , s.indexOf('-'));
-            if(start == -1)
+            if(start == -1 || start === 0 && s[start] == '-')
                 start = Math.max(s.indexOf('+'), s.indexOf('-'));
 
 
@@ -187,6 +185,22 @@
     }
 
     function Bisection(fx, a, b, iterations) {
+        if(fx == ""){
+            alert("Missing Function");
+            return;
+        }
+        if(iterations == ""){
+            alert("Missing No. of iterations");
+            return;
+        }
+        if(calc(fx, a) >= 0) {
+            alert("F(a) MUST be less than zero");
+            return;
+        }
+        if(calc(fx, b) <= 0) {
+            alert("F(b) MUST be less than zero");
+            return;
+        }
 
         document.getElementById("res").innerHTML = "<tr>" +
             "<th>a</th>" +
@@ -194,22 +208,22 @@
             "<th>c</th>" +
             "<th>F<sub>C</sub></th>" + "</tr>";
             
-        document.getElementById("res").innerHTML += "<tr>" +
+            document.getElementById("res").innerHTML += "<tr>" +
             "<th>" + a + "</th>" +
             "<th>" + b + "</th>" +
             "<th>" + ((+a + +b) / 2) + "</th>" +
             "<th>" + calc(fx, (+a + +b) / 2) + "</th>" + "</tr>";
-
+            
         while (iterations--) {
-                let c = (+a + +b) / 2;
-                let fc = calc(fx, c.toFixed(5));
-                if (fc > 0) {
-                    b = c;
-                } else {
-                    a = c;
-                }
-                
-                document.getElementById("res").innerHTML += "<tr>" +
+            let c = (+a + +b) / 2;
+            let fc = calc(fx, c.toFixed(5));
+            if (fc > 0) {
+                b = c;
+            } else {
+                a = c;
+            }
+
+            document.getElementById("res").innerHTML += "<tr>" +
             "<th>" + a + "</th>" +
             "<th>" + b + "</th>" +
             "<th>" + ((+a + +b) / 2) + "</th>" +
@@ -222,18 +236,16 @@
     </head>
     <div id="fields">
         <h2>Bisection</h2>
-        <label>Enter f(x) = 0:</label>
-        <input type="text" id="f(x)"><br>
-        <label>Enter a where f(a) < 0:</label>
-        <input type="text" id="a"><br>
-        <label>Enter b where f(b) > 0:</label>
-        <input type="text" id="b"><br>
-        <label>Enter iterations</label>
-        <input type="text" id="iterations"><br>
-        <input id = "solve" value="Solve" type="button" onClick="Bisection(document.getElementById('f(x)').value, document.getElementById('a').value, document.getElementById('b').value, document.getElementById('iterations').value);"><br>
-
+        <label>f(x) </label>
+        <input type="text" id="f(x)" placeholder="F(X) = 0"><br>
+        <label>a where f(a) < 0:</label>
+        <input type="number" id="a"><br>
+        <label>b where f(b) > 0:</label>
+        <input type="number" id="b"><br>
+        <label>Iterations</label>
+        <input type="number" id="iterations"><br>
+        <input id = "solve" value="Solve" type="button" onClick ="Bisection(document.getElementById('f(x)').value, document.getElementById('a').value, document.getElementById('b').value, document.getElementById('iterations').value);"><br>
         <table id = "res" style="width:100%">
-
             
         </table>
     </div>
