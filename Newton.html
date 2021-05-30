@@ -1,7 +1,7 @@
-<html>
+                                            <html>
     <head>
         <meta charset="UTF-8"/>
-        <title>Math IV solver</title>
+        <title>Newton</title>
         <style>
         body {
             background-color: #212423;
@@ -61,12 +61,9 @@
         while (s.includes(" "))
             s = s.replace(" ", "");
 
-        for(let i = 'A', j = 'a'; i <= 'Z'; i++, j++)
-            while (s.includes(i))
-                s = s.replace(i, j);
+        s = s.toLowerCase();
 
-        while (s.includes("x"))
-            s = s.replace("x", x);
+
 
         while (s.includes("sin"))
             s = s.replace("sin", "s");
@@ -82,11 +79,15 @@
             s = s.replace("ln", "n");
         while (s.includes("e")) // Euler Number
             s = s.replace("e", Math.exp(1));
+        while (s.includes("x"))
+            s = s.replace("x", x);
 
         return s;
     }
 
     function calc(s, x){
+        console.log(s + " " + x);
+        //console.log(s);
         s = fixString(s, x);
         // 1st priority ()
         while (s.includes('(')){
@@ -142,13 +143,10 @@
 
         // 4th priority */
         while (s.includes('*') || s.includes('/')){
-            let start;
-            for(let i = 0; i < s.length; i++){
-                if(s[i] == '*' || s[i] == '/'){
-                    start = i;
-                    break;
-                }
-            }
+            let start = Math.min(s.indexOf('*') , s.indexOf('/'));
+            if(start == -1)
+                start = Math.max(s.indexOf('*'), s.indexOf('/'));
+
             let beforeIDX = getBeforeIDX(s,start);
             let afterIDX = getAfterIDX(s,start);
             let res;
@@ -161,13 +159,10 @@
 
         // 5th priority +-
         while (s.includes('+') || s.indexOf('-') > 0){
-            let start;
-            for(let i = 1; i < s.length; i++){
-                if(s[i] == '+' || s[i] == '-'){
-                    start = i;
-                    break;
-                }
-            }
+            let start = Math.min(s.indexOf('+') , s.indexOf('-'));
+            if(start == -1 || start === 0 && s[start] == '-')
+                start = Math.max(s.indexOf('+'), s.indexOf('-'));
+
             let beforeIDX = getBeforeIDX(s,start);
             let afterIDX = getAfterIDX(s,start);
             let sum;
@@ -180,26 +175,47 @@
         return s;
     }
     
-    function newton(fx, ffx, x0, iterations){
+    function newton(fx, ffx, fffx, x0, iterations){
+        if(fx == ""){
+            alert("Missing Function");
+            return;
+        }
+        if(ffx == ""){
+            alert("Missing Deffrential Function");
+            return;
+        }
+        if(iterations == ""){
+            alert("Missing No. of iterations");
+            return;
+        }
+
+
         let xn = x0;
-        let fxn = calc(fx, xn);
-        let ffxn = calc(ffx, xn);
+        let fxn = calc(fx, parseFloat(xn).toFixed(5));
+       
+        let ffxn = calc(ffx, parseFloat(xn).toFixed(5));
+        let fffxn = calc(fffx, parseFloat(xn).toFixed(5));
         let xnPlus1 = xn - fxn / ffxn;
 
+        if(Math.abs(fxn*fffxn/(ffxn*ffxn)) >= 1 || ffxn == 0){
+            alert("Wrong Inputs");
+            //return 0;
+        }
+
         document.getElementById("res").innerHTML = "<tr>" +
-            "<th>" + "X" + "</th>" +
-            "<th>" + "F<sub>X</sub>" + "</th>" +
-            "<th>" + "F'<sub>X</sub>" + "</th>" + "</tr>";
+        "<th>" + "X" + "</th>" +
+        "<th>" + "F<sub>X</sub>" + "</th>" +
+        "<th>" + "F'<sub>X</sub>" + "</th>" + "</tr>";
 
         document.getElementById("res").innerHTML += "<tr>" +
-            "<th>" + xn + "</th>" +
-            "<th>" + fxn + "</th>" +
-            "<th>" + ffxn + "</th>" + "</tr>";
+        "<th>" + xn + "</th>" +
+        "<th>" + fxn + "</th>" +
+        "<th>" + ffxn + "</th>" + "</tr>";
 
-        for(let i = 0; i < iterations; i++){
+        while(iterations--){
             xn = xnPlus1;
-            fxn = calc(fx, xn);
-            ffxn = calc(ffx, xn);
+            fxn = calc(fx, parseFloat(xn).toFixed(5));
+            ffxn = calc(ffx, parseFloat(xn).toFixed(5));
             xnPlus1 = xn - fxn / ffxn;
             document.getElementById("res").innerHTML += "<tr>" +
             "<th>" + xn + "</th>" +
@@ -215,15 +231,17 @@
     <body>
         <div id="Newton">
             <h2>Newton</h2>
-            <label>Enter equation:</label>
+            <label>Equation</label>
             <input type="text" id="equation" placeholder = "F(X) = 0">
-            <label>Enter deffrential equation:</label>
+            <label>Deffrential equation</label>
             <input type="text" id="equation2">
-            <label>Enter iterations:</label>
-            <input type="text" id="iterations">
-            <label>Enter x0:</label>
-            <input type="text" id="x0">
-            <input id = "solve" value="Solve" type="button" onclick="newton(document.getElementById('equation').value, document.getElementById('equation2').value, document.getElementById('x0').value, document.getElementById('iterations').value);">
+            <label>Second deffrential equation</label>
+            <input type="text" id="equation3">
+            <label>Iterations</label>
+            <input type="number" id="iterations">
+            <label>x0</label>
+            <input type="number" id="x0">
+            <input id = "solve" value="Solve" type="button" onclick="newton(document.getElementById('equation').value, document.getElementById('equation2').value, document.getElementById('equation3').value,  document.getElementById('x0').value, document.getElementById('iterations').value);">
             <table id = "res" style="width:100%">
 
             
